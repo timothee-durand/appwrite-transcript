@@ -1,0 +1,70 @@
+{
+    "projectId": "6353ef7fb1bd65cf8845",
+    "projectName": "test",
+    "functions": [
+        {
+            "$id": "63540502760ccfa58a10",
+            "name": "transcript",
+            "runtime": "node-16.0",
+            "path": "functions/transcript",
+            "entrypoint": "src/index.js",
+            "ignore": [
+                "node_modules",
+                ".npm"
+            ],
+            "execute": [
+                "any"
+            ],
+            "events": [],
+            "schedule": "",
+            "timeout": 15
+        }
+    ],
+    "collections": [
+        {
+            "$id": "6353f08ecb8b2766d8eb",
+            "$createdAt": "2022-10-22T13:30:54.834+00:00",
+            "$updatedAt": "2022-10-23T16:39:50.650+00:00",
+            "$permissions": [
+                "create(\"users\")",
+                "read(\"users\")",
+                "update(\"users\")",
+                "delete(\"users\")"
+            ],
+            "databaseId": "6353f06c3bbe14ecda56",
+            "name": "podcasts",
+            "enabled": true,
+            "documentSecurity": true,
+            "attributes": [
+                {
+                    "key": "name",
+                    "type": "string",
+                    "status": "available",
+                    "required": true,
+                    "array": false,
+                    "size": 100,
+                    "default": null
+                },
+                {
+                    "key": "transcriptId",
+                    "type": "string",
+                    "status": "available",
+                    "required": true,
+                    "array": false,
+                    "size": 200,
+                    "default": null
+                },
+                {
+                    "key": "authorId",
+                    "type": "string",
+                    "status": "available",
+                    "required": true,
+                    "array": false,
+                    "size": 200,
+                    "default": null
+                }
+            ],
+            "indexes": []
+        }
+    ]
+}

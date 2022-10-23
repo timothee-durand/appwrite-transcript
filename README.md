@@ -19,7 +19,14 @@ If the standalone TypeScript plugin doesn't feel fast enough to you, Volar has a
 
 ## Customize configuration
 
-See [Vite Configuration Reference](https://vitejs.dev/config/).
+docker :
+```
+docker run -it --rm \
+    --volume /var/run/docker.sock:/var/run/docker.sock \
+    --volume "$(pwd)"/appwrite:/usr/src/code/appwrite:rw \
+    --entrypoint="install" \
+    appwrite/appwrite:1.0.3
+```
 
 ## Project Setup
 

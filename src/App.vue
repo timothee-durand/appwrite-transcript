@@ -1,23 +1,109 @@
 <script setup lang="ts">
-import { RouterLink, RouterView } from 'vue-router'
-import HelloWorld from './components/HelloWorld.vue'
+import {ID} from 'appwrite';
+import {reactive} from "vue";
+import {account, functions, storage} from "@/services/appwrite";
+import {useTranscriptStore} from "@/stores/transcripts";
+
+const user = reactive({
+  name: "test",
+  email: "admin@test.com",
+  password: "password"
+})
+
+const userLogin = reactive({
+  email: "admin@test.com",
+  password: "password"
+})
+
+const register = async () => {
+  try {
+    const result = await account.create(
+        ID.unique(),
+        user.email,
+        user.password,
+        user.name
+    )
+    console.log(result)
+  } catch (e) {
+    console.error(e)
+  }
+}
+
+
+const login = async () => {
+  try {
+    const result = await account.createEmailSession(
+        user.email,
+        user.password
+    )
+    console.log(result)
+  } catch (e) {
+    console.error(e)
+  }
+}
+
+const transcriptStore = useTranscriptStore()
+transcriptStore.getTranscripts()
+
+const sendAudio = reactive<{ file: File | null, name: string, }>({
+  file: null,
+  name:"test"
+})
+
+const extractImage = ({target}: InputEvent) => {
+  const input = target as HTMLInputElement;
+  let fileList: FileList | null = input.files;
+  if (fileList && fileList[0]) sendAudio.file = fileList[0];
+};
+
+const testFunction = async (e: InputEvent) => {
+  if (!sendAudio.file) return
+
+  try {
+    const file = await storage.createFile("635425752912fbd16b02", "unique()", sendAudio.file)
+    console.log(file)
+    const execution = await functions.createExecution("63540502760ccfa58a10", JSON.stringify({
+      bucketId: file.bucketId,
+      fileId: file.$id,
+      name: sendAudio.name
+    }))
+    console.log(JSON.parse(execution.response).data)
+
+  } catch (e) {
+    console.log(e)
+  }
+}
+
+
 </script>
 
 <template>
   <header>
-    <img alt="Vue logo" class="logo" src="@/assets/logo.svg" width="125" height="125" />
+    <img alt="Vue logo" class="logo" src="@/assets/logo.svg" width="125" height="125"/>
 
     <div class="wrapper">
-      <HelloWorld msg="You did it!" />
-
-      <nav>
-        <RouterLink to="/">Home</RouterLink>
-        <RouterLink to="/about">About</RouterLink>
-      </nav>
+      <form @submit.prevent="register">
+        <input type="text" placeholder="Timothée DURAND" v-model="user.name" required/>
+        <input type="email" placeholder="john.doe@email.com" v-model="user.email" required/>
+        <input type="password" placeholder="john.doe@email.com" v-model="user.password" required/>
+        <button type="submit">Submit</button>
+      </form>
     </div>
-  </header>
 
-  <RouterView />
+    <div class="wrapper">
+      <form @submit.prevent="login">
+        <input type="email" placeholder="john.doe@email.com" v-model="userLogin.email" required/>
+        <input type="password" placeholder="john.doe@email.com" v-model="userLogin.password" required/>
+        <button type="submit">Submit</button>
+      </form>
+    </div>
+
+    <form @submit.prevent="testFunction">
+      <input type="file" @change="extractImage" required accept="audio/*"/>
+      <input type="text"  required v-model="sendAudio.name"/>
+      <button type="submit">Submit</button>
+    </form>
+  </header>
 </template>
 
 <style scoped>
@@ -81,5 +167,9 @@ nav a:first-of-type {
     padding: 1rem 0;
     margin-top: 1rem;
   }
+}
+
+form {
+  display: grid;
 }
 </style>
