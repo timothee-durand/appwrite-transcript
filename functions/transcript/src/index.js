@@ -47,7 +47,7 @@ module.exports = async function (req, res) {
 
     try {
         const response = await axios.post('https://api.deepgram.com/v1/listen/?punctuate=true&model=general&language=fr&tier=base&diarize=true', file, {
-            timeout: 1000 * 5, // Wait for 5 seconds
+            timeout: 1000 * 10, // Wait for 5 seconds
             headers: {
                 "Content-Type": fileMetadata.mimeType,
                 "Authorization": `Token 3cf15f69740b00fa263e1b405377cf810ee0bf21`
