@@ -1,22 +1,15 @@
 <script setup lang="ts">
-
-import {useTranscriptStore} from "@/stores/transcripts";
-import AppHeader from "@/components/AppHeader.vue";
-
-const transcriptStore = useTranscriptStore()
-transcriptStore.getTranscripts()
+  import AppHeader from '@/components/AppHeader.vue'
 </script>
 
 <template>
   <main class=" ">
-    <AppHeader/>
+    <AppHeader />
     <main class="max-w-5xl mx-auto px-4">
-      <RouterView/>
-
+      <RouterView />
     </main>
     <DialogsWrapper />
   </main>
 </template>
 
-<style scoped>
-</style>
+<style scoped></style>

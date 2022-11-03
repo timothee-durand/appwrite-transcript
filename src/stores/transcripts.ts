@@ -1,29 +1,23 @@
-import {ref, computed} from 'vue'
-import {defineStore} from 'pinia'
-import {databases} from "@/services/appwrite";
-import type {Models} from "appwrite";
+import { defineStore } from "pinia";
+import { databases } from "@/services/appwrite";
+import type { Models } from "appwrite";
+import { getTranscripts } from "@/services/transcripts";
+import type { Transcript, TranscriptsStore } from "@/models/transcript";
 
-export interface Transcript extends Models.Document {
-    name: string;
-    transcriptId: string;
-    authorId: string;
-}
+export const useTranscriptStore = defineStore("transcripts", {
+  state: (): TranscriptsStore => ({
 
-interface TranscriptsStore {
-    transcriptDocuments: Transcript[]
-}
-
-export const useTranscriptStore = defineStore('transcripts', {
-    state: (): TranscriptsStore => ({
-        transcriptDocuments: []
-    }),
-    getters: {
-    },
-    actions: {
-        async getTranscripts() {
-            const result = await databases.listDocuments<Transcript>("6353f06c3bbe14ecda56", "6353f08ecb8b2766d8eb")
-            this.transcriptDocuments = result.documents
-        },
-
+    transcriptDocuments: []
+  }),
+  getters: {
+    getTranscript(state): (id: string) => Transcript | undefined {
+      return (id: string) => state.transcriptDocuments.find(({ $id }) => id === $id);
     }
-})
+  },
+  actions: {
+    async getTranscripts() {
+      const result = await getTranscripts()
+      this.transcriptDocuments = result.documents;
+    }
+  }
+});

@@ -18,6 +18,23 @@
             "events": [],
             "schedule": "",
             "timeout": 15
+        },
+        {
+            "$id": "6362d4c54d41d1c37b0b",
+            "name": "Get Full Transcript",
+            "runtime": "node-16.0",
+            "path": "functions/Get Full Transcript",
+            "entrypoint": "src/index.js",
+            "ignore": [
+                "node_modules",
+                ".npm"
+            ],
+            "execute": [
+                "any"
+            ],
+            "events": [],
+            "schedule": "",
+            "timeout": 15
         }
     ],
     "collections": [
@@ -46,7 +63,7 @@
                     "default": null
                 },
                 {
-                    "key": "transcriptId",
+                    "key": "authorId",
                     "type": "string",
                     "status": "available",
                     "required": true,
@@ -55,12 +72,21 @@
                     "default": null
                 },
                 {
-                    "key": "authorId",
+                    "key": "audioFileId",
                     "type": "string",
                     "status": "available",
                     "required": true,
                     "array": false,
-                    "size": 200,
+                    "size": 100,
+                    "default": null
+                },
+                {
+                    "key": "transcriptFileId",
+                    "type": "string",
+                    "status": "available",
+                    "required": true,
+                    "array": false,
+                    "size": 100,
                     "default": null
                 }
             ],
