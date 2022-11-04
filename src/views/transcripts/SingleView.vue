@@ -45,6 +45,8 @@
   import { useToast } from 'vue-toastification'
   import { computed, reactive, ref } from 'vue'
   import type {
+    FullTranscript,
+    Speaker,
     Transcript,
     TranscriptFile,
     TranscriptWord,
@@ -54,31 +56,34 @@
   import AppBtn from '@/components/AppBtn.vue'
   import { asBlob } from 'html-docx-js-typescript'
   import { saveAs } from 'file-saver'
-  import { useTranscriptStore } from '@/stores/transcripts'
   import BaseLayout from '@/components/BaseLayout.vue'
+  import {
+    extractSpeakerFromWords,
+    getFullTranscript,
+    sortTranscriptionByPart,
+  } from '@/services/transcripts'
+  import { Sentence } from '@/models/transcript'
+  import { Blob } from 'buffer'
 
-  interface Speaker {
-    number: number
-    name?: string
-  }
-
-  interface SingleStore {
-    transcript: Transcript | undefined
-    transcriptFile: TranscriptFile | undefined
+  interface SingleState extends FullTranscript {
     audioFileUrl: URL | undefined
     speakers: Speaker[]
   }
 
   const container = ref<HTMLElement | null>(null)
+  const currentPlayerTime = ref(0)
+  const state = reactive<SingleState>({
+    transcript: undefined,
+    transcriptFile: undefined,
+    audioFileUrl: undefined,
+    speakers: [],
+  })
 
   const route = useRoute()
   const toast = useToast()
   let transcriptId = route.params.id
   if (!transcriptId) toast.error('Missing transcript ID')
-
   if (Array.isArray(transcriptId)) transcriptId = transcriptId.join('')
-
-  const currentPlayerTime = ref(0)
 
   function setCurrentPlayerTime({ target }: Event) {
     const audio = target as HTMLAudioElement
@@ -86,13 +91,6 @@
       currentPlayerTime.value = audio.currentTime
     }
   }
-
-  const state = reactive<SingleStore>({
-    transcript: undefined,
-    transcriptFile: undefined,
-    audioFileUrl: undefined,
-    speakers: [],
-  })
 
   getFullTranscript(transcriptId).then(async (result) => {
     if (!result) {
@@ -109,40 +107,12 @@
 
     if (!state.transcriptFile) return
     if (state.speakers.length === 0)
-      state.speakers = [
-        ...new Set(state.transcriptFile.words.map(({ speaker }) => speaker)),
-      ].map(
-        (number): Speaker => ({
-          number,
-          name: `Speaker ${number}`,
-        })
-      )
+      state.speakers = extractSpeakerFromWords(state.transcriptFile.words)
   })
-
-  class Sentence {
-    speaker!: Speaker
-    words: TranscriptWord[] = []
-  }
 
   const wordsSortedByPart = computed<Sentence[]>(() => {
     if (!state.transcriptFile || !state.transcriptFile.words) return []
-    const result: Sentence[] = []
-    let previousSpeaker: number = state.transcriptFile.words[0].speaker
-    let tempSentence: Sentence = new Sentence()
-    state.transcriptFile.words.forEach((word) => {
-      if (previousSpeaker === word.speaker) {
-        tempSentence.words.push(word)
-        if (!tempSentence.speaker)
-          tempSentence.speaker = state.speakers.find(
-            ({ number }) => word.speaker === number
-          ) ?? { number: word.speaker }
-        return
-      }
-      result.push(tempSentence)
-      tempSentence = new Sentence()
-      previousSpeaker = word.speaker
-    })
-    return result
+    return sortTranscriptionByPart(state.transcriptFile.words, state.speakers)
   })
 
   async function saveAsDocx() {
@@ -153,21 +123,6 @@
       (state.transcript ? state.transcript.name : 'podcast') +
       '-transcript.docx'
     saveAs(blob, fileName)
-  }
-
-  async function getFullTranscript(
-    transcriptId: string
-  ): Promise<SingleStore | undefined> {
-    const fullTranscriptExecution = await functions.createExecution(
-      '6362d4c54d41d1c37b0b',
-      transcriptId
-    )
-    if (fullTranscriptExecution.status !== 'completed') {
-      toast.error('An error occured')
-      console.log(fullTranscriptExecution)
-      return
-    }
-    return JSON.parse(fullTranscriptExecution.response)
   }
 </script>
 

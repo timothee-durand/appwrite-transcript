@@ -26,7 +26,8 @@ module.exports = async function (req, res) {
   if (
     !req.variables['APPWRITE_FUNCTION_ENDPOINT'] ||
     !req.variables['APPWRITE_FUNCTION_API_KEY'] ||
-    !req.variables['APPWRITE_FUNCTION_JWT']
+    !req.variables['APPWRITE_FUNCTION_JWT'] ||
+    !req.variables['APPWRITE_FUNCTION_DEEPGRAM_KEY']
   ) {
     console.warn(
       'Environment variables are not set. Function cannot use Appwrite SDK.'
@@ -59,7 +60,7 @@ module.exports = async function (req, res) {
         timeout: 1000 * 10, // Wait for 5 seconds
         headers: {
           'Content-Type': fileMetadata.mimeType,
-          Authorization: `Token 3cf15f69740b00fa263e1b405377cf810ee0bf21`,
+          Authorization: `Token ${req.variables['APPWRITE_FUNCTION_DEEPGRAM_KEY']}`,
         },
       }
     )

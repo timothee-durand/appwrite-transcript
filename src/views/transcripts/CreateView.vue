@@ -27,7 +27,6 @@
 
 <script setup lang="ts">
   import { reactive, ref } from 'vue'
-  import { functions, storage } from '@/services/appwrite'
   import Heading from '@/components/AppHeading.vue'
   import FormGroup from '@/components/FormGroup.vue'
   import AudioInput from '@/components/AudioInput.vue'
@@ -36,6 +35,10 @@
   import { useRouter } from 'vue-router'
   import { ROUTE_SINGLE_TRANSCRIPT } from '@/router/routes'
   import BaseLayout from '@/components/BaseLayout.vue'
+  import {
+    launchTranscription,
+    uploadPodcastAudio,
+  } from '@/services/transcription'
 
   const audio = reactive<{ file: File | null; name: string }>({
     file: null,
@@ -57,20 +60,8 @@
 
     try {
       isLoading.value = true
-      const file = await storage.createFile(
-        '635425752912fbd16b02',
-        'unique()',
-        audio.file
-      )
-      const execution = await functions.createExecution(
-        '63540502760ccfa58a10',
-        JSON.stringify({
-          bucketId: file.bucketId,
-          audioFileId: file.$id,
-          name: audio.name,
-        })
-      )
-      console.log(execution)
+      const file = await uploadPodcastAudio(audio.file)
+      const execution = await launchTranscription(file, audio.name)
       if (execution.status === 'failed') {
         toast.error(execution.stderr)
         return

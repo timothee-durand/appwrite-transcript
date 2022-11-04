@@ -1,12 +1,12 @@
 {
     "projectId": "6353ef7fb1bd65cf8845",
-    "projectName": "test",
+    "projectName": "Transcript'",
     "functions": [
         {
             "$id": "63540502760ccfa58a10",
-            "name": "transcript",
+            "name": "Transcript audio",
             "runtime": "node-16.0",
-            "path": "functions/transcript",
+            "path": "functions/transcript-audio",
             "entrypoint": "src/index.js",
             "ignore": [
                 "node_modules",
@@ -23,7 +23,7 @@
             "$id": "6362d4c54d41d1c37b0b",
             "name": "Get Full Transcript",
             "runtime": "node-16.0",
-            "path": "functions/Get Full Transcript",
+            "path": "functions/full-transcript",
             "entrypoint": "src/index.js",
             "ignore": [
                 "node_modules",

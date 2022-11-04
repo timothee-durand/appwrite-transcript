@@ -20,5 +20,20 @@ export interface TranscriptWord {
 export interface TranscriptFile {
   confidence: number
   transcript: string
-  words: Array<TranscriptWord>
+  words: TranscriptWord[]
+}
+
+export interface FullTranscript {
+  transcript: Transcript | undefined
+  transcriptFile: TranscriptFile | undefined
+}
+
+export interface Speaker {
+  number: number
+  name?: string
+}
+
+export class Sentence {
+  speaker!: Speaker
+  words: TranscriptWord[] = []
 }
