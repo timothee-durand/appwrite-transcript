@@ -3,13 +3,19 @@
 </script>
 
 <template>
-  <main class=" ">
+  <main class="app">
     <AppHeader />
-    <main class="max-w-5xl mx-auto px-4">
-      <RouterView />
-    </main>
+
+    <RouterView />
     <DialogsWrapper />
   </main>
 </template>
 
-<style scoped></style>
+<style scoped>
+  .app {
+    display: grid;
+    grid-template-rows: max-content 1fr;
+    gap: 1rem;
+    min-height: 100vh;
+  }
+</style>

@@ -1,4 +1,4 @@
-const sdk = require("node-appwrite");
+const sdk = require('node-appwrite')
 
 /*
   'req' variable has:
@@ -13,47 +13,48 @@ const sdk = require("node-appwrite");
   If an error is thrown, a response with code 500 will be returned.
 */
 
-module.exports = async function(req, res) {
-  const client = new sdk.Client();
+module.exports = async function (req, res) {
+  const client = new sdk.Client()
 
   // You can remove services you don't use
-  const database = new sdk.Databases(client);
-  const storage = new sdk.Storage(client);
+  const database = new sdk.Databases(client)
+  const storage = new sdk.Storage(client)
 
   if (
-    !req.variables["APPWRITE_FUNCTION_ENDPOINT"] ||
-    !req.variables["APPWRITE_TRANSCRIPT_DB_ID"] ||
-    !req.variables["APPWRITE_TRANSCRIPT_COL_ID"] ||
-    !req.variables["APPWRITE_TRANSCRIPT_BUCK_ID"]
+    !req.variables['APPWRITE_FUNCTION_ENDPOINT'] ||
+    !req.variables['APPWRITE_TRANSCRIPT_DB_ID'] ||
+    !req.variables['APPWRITE_TRANSCRIPT_COL_ID'] ||
+    !req.variables['APPWRITE_TRANSCRIPT_BUCK_ID']
   ) {
-    console.warn("Environment variables are not set. Function cannot use Appwrite SDK.");
+    console.warn(
+      'Environment variables are not set. Function cannot use Appwrite SDK.'
+    )
   } else {
     client
-      .setEndpoint(req.variables["APPWRITE_FUNCTION_ENDPOINT"])
-      .setProject(req.variables["APPWRITE_FUNCTION_PROJECT_ID"])
-      .setJWT(req.variables["APPWRITE_FUNCTION_JWT"]);
+      .setEndpoint(req.variables['APPWRITE_FUNCTION_ENDPOINT'])
+      .setProject(req.variables['APPWRITE_FUNCTION_PROJECT_ID'])
+      .setJWT(req.variables['APPWRITE_FUNCTION_JWT'])
   }
 
-  const transcriptId = req.payload;
-  if (!transcriptId)
-    throw new Error("You must send the transcriptId");
+  const transcriptId = req.payload
+  if (!transcriptId) throw new Error('You must send the transcriptId')
 
   const transcript = await database.getDocument(
-    req.variables["APPWRITE_TRANSCRIPT_DB_ID"],
-    req.variables["APPWRITE_TRANSCRIPT_COL_ID"],
+    req.variables['APPWRITE_TRANSCRIPT_DB_ID'],
+    req.variables['APPWRITE_TRANSCRIPT_COL_ID'],
     transcriptId
-  );
+  )
 
+  if (!transcript) throw new Error('This transcript does not exist')
 
-  if(!transcript)
-    throw new Error("This transcript does not exist");
+  const transcriptFile = await storage.getFileView(
+    req.variables['APPWRITE_TRANSCRIPT_BUCK_ID'],
+    transcript.transcriptFileId
+  )
 
-  const transcriptFile = await storage.getFileView(req.variables["APPWRITE_TRANSCRIPT_BUCK_ID"], transcript.transcriptFileId)
-
-  if(!transcriptFile)
-    throw new Error("The transcript file does not exist");
+  if (!transcriptFile) throw new Error('The transcript file does not exist')
   res.json({
     transcript,
-    transcriptFile : JSON.parse(transcriptFile.toString())
-  });
-};
+    transcriptFile: JSON.parse(transcriptFile.toString()),
+  })
+}

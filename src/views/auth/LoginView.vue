@@ -39,11 +39,11 @@
   import { useToast } from 'vue-toastification'
   import { ROUTE_LIST_TRANSCRIPT, ROUTE_REGISTER } from '@/router/routes'
   import { useRouter } from 'vue-router'
-  import Heading from '@/components/Heading.vue'
+  import Heading from '@/components/AppHeading.vue'
 
   const state = reactive({
-    email: 'admin@test.com',
-    password: 'password',
+    email: '',
+    password: '',
   })
 
   const toast = useToast()

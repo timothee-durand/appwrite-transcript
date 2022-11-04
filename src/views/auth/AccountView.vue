@@ -1,37 +1,35 @@
 <template>
   <LayoutForm>
     <form @submit.prevent="register" class="grid gap-2">
-      <Heading class="text-base-100 text-center">Transcript'</Heading>
+      <Heading class="text-base-100 text-center">My account</Heading>
       <FormGroup
         label="Name"
         type="text"
         placeholder="Timothée DURAND"
         v-model="user.name"
-        required
       />
       <FormGroup
         label="Email"
         type="email"
         placeholder="john.doe@email.com"
         v-model="user.email"
-        required
       />
       <FormGroup
         label="Password"
         type="password"
         placeholder="password"
         v-model="user.password"
+      />
+      <FormGroup
+        label="Old password"
+        type="password"
+        placeholder="password"
+        v-model="user.oldPassword"
         required
       />
       <button type="submit" class="btn btn-accent justify-self-center mt-4">
-        Register
+        Update
       </button>
-      <p class="text-base-100 text-center mt-6">
-        Already registered ?
-        <RouterLink :to="{ name: ROUTE_LOGIN }" class="link-accent"
-          >Login</RouterLink
-        >
-      </p>
     </form>
   </LayoutForm>
 </template>
@@ -39,28 +37,40 @@
 <script setup lang="ts">
   import { reactive } from 'vue'
   import { account } from '@/services/appwrite'
-  import { ID } from 'appwrite'
+  import { Models } from 'appwrite'
   import LayoutForm from '@/components/LayoutForm.vue'
   import FormGroup from '@/components/FormGroup.vue'
   import { useToast } from 'vue-toastification'
-  import { ROUTE_LIST_TRANSCRIPT, ROUTE_LOGIN } from '@/router/routes'
   import { useRouter } from 'vue-router'
-  import Heading from '@/components/Heading.vue'
+  import Heading from '@/components/AppHeading.vue'
 
   const user = reactive({
-    name: 'test',
-    email: 'admin@test.com',
-    password: 'password',
+    name: '',
+    email: '',
+    password: '',
+    oldPassword: '',
   })
+
+  let oldAccount: Models.Account<{}> | null = null
 
   const toast = useToast()
   const router = useRouter()
 
+  account.get().then((account) => {
+    user.name = account.name
+    user.email = account.email
+    oldAccount = account
+  })
+
   const register = async () => {
     try {
-      await account.create(ID.unique(), user.email, user.password, user.name)
-      toast.success("You're registered !")
-      await router.push({ name: ROUTE_LIST_TRANSCRIPT })
+      if (!oldAccount) return
+      if (user.name !== oldAccount.name) await account.updateName(user.name)
+      if (user.email !== oldAccount.email)
+        await account.updateEmail(user.email, user.oldPassword)
+      if (user.password !== '')
+        await account.updatePassword(user.password, user.oldPassword)
+      toast.success('Update successful !')
     } catch (e) {
       toast.error(e.message)
     }

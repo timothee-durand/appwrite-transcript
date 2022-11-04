@@ -4,12 +4,15 @@
   >
     <p>{{ name }}</p>
     <p class="justify-self-center">{{ date }}</p>
-    <div class="buttons justify-self-end flex gap-2">
-      <Btn class="btn-warning" @click="emit('delete', id)"
-        ><v-icon name="hi-trash"
-      /></Btn>
-      <RouterLink :to="{name : ROUTE_SINGLE_TRANSCRIPT, params : {id}}" class="btn-primary btn" @click="emit('edit', id)">
-        <v-icon name="hi-pencil" />
+    <div class="buttons justify-self-end flex gap-5">
+      <button @click="emit('delete', id)">
+        <v-icon name="hi-trash" />
+      </button>
+      <RouterLink
+        :to="{ name: ROUTE_SINGLE_TRANSCRIPT, params: { id } }"
+        @click="emit('edit', id)"
+      >
+        <v-icon name="hi-eye" />
       </RouterLink>
     </div>
   </div>
@@ -18,8 +21,8 @@
 <script setup lang="ts">
   import { computed } from 'vue'
   import dayjs from 'dayjs'
-  import Btn from '@/components/Btn.vue'
-  import {ROUTE_SINGLE_TRANSCRIPT} from "@/router/routes";
+  import Btn from '@/components/AppBtn.vue'
+  import { ROUTE_SINGLE_TRANSCRIPT } from '@/router/routes'
 
   const props = defineProps<{
     name: string

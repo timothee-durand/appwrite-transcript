@@ -42,8 +42,14 @@ module.exports = async function (req, res) {
     throw new Error(
       'You must send the bucketId, the name and the audioFileId :' + req.payload
     )
-  const fileMetadata = await storage.getFile(payload.bucketId, payload.audioFileId)
-  const file = await storage.getFileDownload(payload.bucketId, payload.audioFileId)
+  const fileMetadata = await storage.getFile(
+    payload.bucketId,
+    payload.audioFileId
+  )
+  const file = await storage.getFileDownload(
+    payload.bucketId,
+    payload.audioFileId
+  )
 
   try {
     const response = await axios.post(

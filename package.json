@@ -8,12 +8,14 @@
     "test:unit": "vitest --environment jsdom --root src/",
     "build-only": "vite build",
     "type-check": "vue-tsc --noEmit -p tsconfig.vitest.json --composite false",
-    "lint": "eslint . --ext .vue,.js,.jsx,.cjs,.mjs,.ts,.tsx,.cts,.mts --fix --ignore-path .gitignore"
+    "lint": "eslint . --ext .vue,.ts --fix --ignore-path .gitignore"
   },
   "dependencies": {
     "appwrite": "^10.1.0",
     "daisyui": "^2.33.0",
     "dayjs": "^1.11.6",
+    "file-saver": "^2.0.5",
+    "html-docx-js-typescript": "^0.1.5",
     "oh-vue-icons": "^1.0.0-rc3",
     "pinia": "^2.0.23",
     "sass": "^1.55.0",
@@ -25,6 +27,7 @@
   },
   "devDependencies": {
     "@rushstack/eslint-patch": "^1.1.4",
+    "@types/file-saver": "^2.0.5",
     "@types/jsdom": "^20.0.0",
     "@types/node": "^16.11.68",
     "@typescript-eslint/eslint-plugin": "^5.41.0",

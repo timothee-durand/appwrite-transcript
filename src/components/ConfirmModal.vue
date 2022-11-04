@@ -13,7 +13,7 @@
 </template>
 
 <script setup lang="ts">
-  import Btn from '@/components/Btn.vue'
+  import Btn from '@/components/AppBtn.vue'
   const emit = defineEmits<{
     (e: 'cancel'): void
     (e: 'confirm'): void

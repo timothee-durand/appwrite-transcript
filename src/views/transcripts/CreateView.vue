@@ -1,38 +1,41 @@
 <template>
-  <form @submit.prevent="sendAudio" class="max-w-lg mx-auto">
-    <Heading class="my-4">Create transcript</Heading>
-    <div class="grid gap-4">
-      <FormGroup label="Podcast" light-mode>
-        <AudioInput label="Choose file" @fileChange="chooseFile" />
-      </FormGroup>
-      <FormGroup
-        light-mode
-        label="Name"
-        placeholder="A great podcast name"
-        type="text"
-        required
-        v-model="audio.name"
-      />
-      <Btn
-        type="submit"
-        class="justify-self-start mt-3"
-        :class="{ 'btn-loading': isLoading }"
-        >Submit</Btn
-      >
-    </div>
-  </form>
+  <BaseLayout>
+    <form @submit.prevent="sendAudio">
+      <Heading class="my-4">Create transcript</Heading>
+      <div class="grid gap-4">
+        <FormGroup label="Podcast" light-mode>
+          <AudioInput label="Choose file" @fileChange="chooseFile" />
+        </FormGroup>
+        <FormGroup
+          light-mode
+          label="Name"
+          placeholder="A great podcast name"
+          type="text"
+          required
+          v-model="audio.name"
+        />
+        <Btn
+          type="submit"
+          class="justify-self-start mt-3"
+          :class="{ 'btn-loading': isLoading }"
+          >Submit</Btn
+        >
+      </div>
+    </form>
+  </BaseLayout>
 </template>
 
 <script setup lang="ts">
   import { reactive, ref } from 'vue'
   import { functions, storage } from '@/services/appwrite'
-  import Heading from '@/components/Heading.vue'
+  import Heading from '@/components/AppHeading.vue'
   import FormGroup from '@/components/FormGroup.vue'
   import AudioInput from '@/components/AudioInput.vue'
-  import Btn from '@/components/Btn.vue'
+  import Btn from '@/components/AppBtn.vue'
   import { useToast } from 'vue-toastification'
   import { useRouter } from 'vue-router'
   import { ROUTE_SINGLE_TRANSCRIPT } from '@/router/routes'
+  import BaseLayout from '@/components/BaseLayout.vue'
 
   const audio = reactive<{ file: File | null; name: string }>({
     file: null,

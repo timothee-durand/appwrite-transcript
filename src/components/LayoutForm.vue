@@ -1,10 +1,7 @@
 <template>
-  <div class="flex items-center min-h-screen justify-center">
-    <div
-      class="bg-base-content p-10 rounded-lg w-5/12 max-w-xl min-w-fit text-base-100"
-    >
-      <slot />
-    </div>
+  <div
+    class="justify-self-center self-center bg-base-content p-10 rounded-lg text-base-100 w-5/12 min-w-fit max-w-xl"
+  >
+    <slot />
   </div>
 </template>
-<style></style>
