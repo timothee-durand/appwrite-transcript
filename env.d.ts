@@ -1,6 +1,8 @@
 /// <reference types="vite/client" />
 
 interface ImportMetaEnv {
+  readonly VITE_PROJECT_ENDPOINT: string
+  readonly VITE_PROJECT_ID: string
   readonly VITE_PODCAST_DB_ID: string
   readonly VITE_PODCAST_COL_ID: string
   readonly VITE_TRANSCRIPT_BUCK_ID: string

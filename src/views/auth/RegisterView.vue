@@ -5,7 +5,7 @@
       <FormGroup
         label="Name"
         type="text"
-        placeholder="Timothée DURAND"
+        placeholder="John Doe"
         v-model="user.name"
         required
       />

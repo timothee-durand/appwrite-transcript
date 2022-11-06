@@ -3,6 +3,11 @@ const sdk = require('node-appwrite')
 const axios = require('axios')
 const { InputFile, ID } = require('node-appwrite')
 
+const SETTINGS = {
+  databaseId : "6353f06c3bbe14ecda56",
+  collectionId : "6353f08ecb8b2766d8eb"
+}
+
 /*
   'req' variable has:
     'headers' - object with request headers
@@ -25,8 +30,9 @@ module.exports = async function (req, res) {
 
   if (
     !req.variables['APPWRITE_FUNCTION_ENDPOINT'] ||
-    !req.variables['APPWRITE_FUNCTION_API_KEY'] ||
+    !req.variables['APPWRITE_FUNCTION_PROJECT_ID'] ||
     !req.variables['APPWRITE_FUNCTION_JWT'] ||
+    !req.variables['APPWRITE_TRANSCRIPT_BUCKET_ID'] ||
     !req.variables['APPWRITE_FUNCTION_DEEPGRAM_KEY']
   ) {
     console.warn(
@@ -37,12 +43,14 @@ module.exports = async function (req, res) {
       .setEndpoint(req.variables['APPWRITE_FUNCTION_ENDPOINT'])
       .setProject(req.variables['APPWRITE_FUNCTION_PROJECT_ID'])
       .setJWT(req.variables['APPWRITE_FUNCTION_JWT'])
+    console.log(client)
   }
   const payload = JSON.parse(req.payload)
   if (!payload.bucketId || !payload.audioFileId || !payload.name)
     throw new Error(
       'You must send the bucketId, the name and the audioFileId :' + req.payload
     )
+  console.log(payload)
   const fileMetadata = await storage.getFile(
     payload.bucketId,
     payload.audioFileId
@@ -70,14 +78,14 @@ module.exports = async function (req, res) {
       payload.name + '.json'
     )
     const transcript = await storage.createFile(
-      '6353f19415e94ccba2b9',
+        req.variables['APPWRITE_TRANSCRIPT_BUCKET_ID'],
       ID.unique(),
       json
     )
     const currentUser = await account.get()
     const document = await database.createDocument(
-      '6353f06c3bbe14ecda56',
-      '6353f08ecb8b2766d8eb',
+      SETTINGS.databaseId,
+      SETTINGS.collectionId,
       'unique()',
       {
         name: payload.name,

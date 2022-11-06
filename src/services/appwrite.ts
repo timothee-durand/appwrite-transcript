@@ -1,8 +1,8 @@
 import { Account, Client, Databases, Functions, Storage } from 'appwrite'
 
 export const client = new Client()
-  .setEndpoint('http://localhost/v1')
-  .setProject('6353ef7fb1bd65cf8845')
+  .setEndpoint(import.meta.env.VITE_PROJECT_ENDPOINT)
+  .setProject(import.meta.env.VITE_PROJECT_ID)
 
 export const account = new Account(client)
 export const functions = new Functions(client)

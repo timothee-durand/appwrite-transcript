@@ -1,8 +1,8 @@
 import { functions, storage } from '@/services/appwrite'
 import type { Models } from 'appwrite'
 
-export function uploadPodcastAudio(file: File): Promise<Models.File> {
-  return storage.createFile(
+export async function uploadPodcastAudio(file: File): Promise<Models.File> {
+  return await storage.createFile(
     import.meta.env.VITE_AUDIO_BUCK_ID,
     'unique()',
     file

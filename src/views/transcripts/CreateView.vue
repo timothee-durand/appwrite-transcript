@@ -39,6 +39,7 @@
     launchTranscription,
     uploadPodcastAudio,
   } from '@/services/transcription'
+  import {storage} from "@/services/appwrite";
 
   const audio = reactive<{ file: File | null; name: string }>({
     file: null,
@@ -61,9 +62,16 @@
     try {
       isLoading.value = true
       const file = await uploadPodcastAudio(audio.file)
+      console.log({file})
+      const fileMetadata = await storage.getFile(
+          file.bucketId,
+          file.$id
+      )
+      console.log({fileMetadata})
       const execution = await launchTranscription(file, audio.name)
+      console.log({execution})
       if (execution.status === 'failed') {
-        toast.error(execution.stderr)
+        toast.error("An error occurred")
         return
       }
       const data = JSON.parse(execution.response)
