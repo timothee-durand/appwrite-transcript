@@ -34,8 +34,8 @@
   const toast = useToast()
 
   const deleteTranscript = async (id: string) => {
-    const result = await deleteModal.reveal()
-    if (!result) return
+    const { isCanceled } = await deleteModal.reveal()
+    if (isCanceled) return
     try {
       await databases.deleteDocument(
         import.meta.env.VITE_PODCAST_DB_ID,
